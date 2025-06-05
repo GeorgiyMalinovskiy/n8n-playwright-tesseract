@@ -6,7 +6,6 @@ RUN apk add --no-cache \
     chromium \
     chromium-chromedriver \
     firefox \
-    webkit2gtk-4.1 \
     tesseract-ocr \
     tesseract-ocr-data-eng \
     tesseract-ocr-data-fra \
