@@ -22,19 +22,17 @@ RUN pip3 install --no-cache-dir --break-system-packages --root-user-action=ignor
     pdf2image
 
 # Install Node.js packages GLOBALLY so task runners can find them
-# This is the key fix - task runners need global access to these modules
 RUN npm install -g \
     playwright@latest \
     tesseract.js \
-    jimp \
-    pdf-poppler
+    jimp
 
 # Set up proper directories and permissions
 RUN mkdir -p /home/node/.n8n && \
     chown -R node:node /home/node/.n8n && \
     chmod 755 /home/node/.n8n
 
-# Create n8n config
+# Create n8n config with strict permissions
 RUN echo '{}' > /home/node/.n8n/config && \
     chown node:node /home/node/.n8n/config && \
     chmod 600 /home/node/.n8n/config
