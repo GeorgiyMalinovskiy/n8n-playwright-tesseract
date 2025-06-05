@@ -17,11 +17,10 @@ RUN npm install --prefix /home/node/.npm-global \
     tesseract.js \
     jimp
 
-# Install Playwright browsers and their dependencies
+# Install Playwright browsers without system dependencies
 RUN export PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright && \
     NODE_PATH=/home/node/.npm-global/lib/node_modules \
-    npx --prefix /home/node/.npm-global playwright install chromium firefox && \
-    npx --prefix /home/node/.npm-global playwright install-deps chromium firefox
+    npx --prefix /home/node/.npm-global playwright install chromium firefox
 
 # Set environment variables
 ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright
