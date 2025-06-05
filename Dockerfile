@@ -19,7 +19,8 @@ RUN npm install --prefix /home/node/.npm-global \
 
 # Install Playwright browsers (with --yes to avoid prompts)
 RUN export PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright && \
-    /home/node/.npm-global/bin/playwright install --yes chromium firefox
+    NODE_PATH=/home/node/.npm-global/lib/node_modules \
+    npx --prefix /home/node/.npm-global playwright install --yes chromium firefox
 
 # Set environment variables
 ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright
