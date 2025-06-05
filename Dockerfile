@@ -1,49 +1,19 @@
 FROM docker.n8n.io/n8nio/n8n:latest
-USER root
 
-# Install system packages required for browser automation and OCR
-RUN apk add --no-cache \
-    chromium \
-    chromium-chromedriver \
-    firefox \
-    tesseract-ocr \
-    tesseract-ocr-data-eng \
-    imagemagick \
-    ghostscript \
-    python3 \
-    py3-pip \
-    && rm -rf /var/cache/apk/*
+USER node
 
-# Install Python packages for OCR and image processing
-# Use --root-user-action=ignore to suppress the warning
-RUN pip3 install --no-cache-dir --break-system-packages --root-user-action=ignore \
-    pytesseract \
-    Pillow \
-    pdf2image
-
-# Install Node.js packages GLOBALLY so task runners can find them
+# Install Node.js packages globally
 RUN npm install -g \
     playwright@latest \
     tesseract.js \
     jimp
 
-# Set up proper directories and permissions
-RUN mkdir -p /home/node/.n8n && \
-    chown -R node:node /home/node/.n8n && \
-    chmod 755 /home/node/.n8n
+# Install Playwright browsers (with --yes to avoid prompts)
+RUN npx playwright install --yes chromium firefox
 
-# Create n8n config with strict permissions
-RUN echo '{}' > /home/node/.n8n/config && \
-    chown node:node /home/node/.n8n/config && \
-    chmod 600 /home/node/.n8n/config
+# Set environment variables
+ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright
+ENV NODE_ENV=production
 
 # Verify installations
-RUN node --version && npm --version
-RUN npm list -g tesseract.js || echo "tesseract.js check"
-
-USER node
-
-# Set environment variables for browsers
-ENV PLAYWRIGHT_BROWSERS_PATH=/usr/bin
-ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
-ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
+RUN npm list -g playwright tesseract.js jimp || true
